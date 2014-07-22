@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pythagorean Expectation in Baseball</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Pythagorean Expectation in Baseball">
+  <meta name="author" content="Steven Silverman">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>Pythagorean Expectation in Baseball</h1>
+    <h2>A ShinyApp in R</h2>
+    <p>Steven Silverman<br/></p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>Pythagorean Expectation</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>Originally developed by Bill James</li>
+<li>Simple formula: \(\text{Winning Percentage} = \dfrac{Runs Scored^2}{Runs Scored^2 + Runs Allowed^2}\)</li>
+<li>Gives an indicator of how lucky a team was
+
+<ul>
+<li>Above expectation: lucky</li>
+<li>Below expectation: unlucky</li>
+</ul></li>
+<li>Not a perfect estimator, but usually within 3 or 4 games for the majority of teams</li>
+<li>There are usually a few outliers far from their expectation, like in any distribution<br></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-2" style="background:;">
+  <hgroup>
+    <h2>Accuracy</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>Data from Lahman DB (<a href="http://www.seanlahman.com/baseball-archive/statistics">http://www.seanlahman.com/baseball-archive/statistics</a>)</li>
+</ul>
+
+<pre><code class="r">runs &lt;- read.csv(&quot;runs.csv&quot;); runs$Pythag &lt;- (runs$R^2)/(runs$R^2 + runs$RA^2)
+plot(runs$Pythag, runs$WPct, xlab = &quot;Pythagorean Expectation&quot;,
+     ylab = &quot;Winning Percentage&quot;, main = &quot;WPct vs Pythag since 1955; r = 0.94&quot;)
+fit &lt;- lm(runs$WPct ~ runs$Pythag); abline(fit, col = &quot;red&quot;, lwd = 2)
+</code></pre>
+
+<p><img src="assets/fig/unnamed-chunk-1.png" title="plot of chunk unnamed-chunk-1" alt="plot of chunk unnamed-chunk-1" style="display: block; margin: auto;" /></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>Other Forms</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>There are close or equivalent forms that some people prefer</li>
+<li>One example: \(\dfrac{Wins}{Losses} = \dfrac{Runs Scored^2}{Runs Allowed^2}\)</li>
+<li>Dispute over the exponent
+
+<ul>
+<li>2 was James&#39;s original choice, and it&#39;s the most simplistic</li>
+<li>1.83 has been shown to be more accurate in general</li>
+<li>Other versions (Pythagenport, Pythagenpat) change the exponent for each team</li>
+</ul></li>
+<li>In the app, I give the user the option of which exponent to use</li>
+<li>The user also inputs the runs scored and runs allowed numbers (default is 700 for both)</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h2>Output</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>Panel for explanation and user input; separate panel for displaying the user&#39;s choices and results</li>
+<li>Winning percentage as well as record over a 162-game season are calculated and displayed</li>
+<li>Sample calculation below for a team that scored 750 runs and allowed 700, using 2 as the exponent</li>
+</ul>
+
+<pre><code class="r">RS &lt;- 750; RA &lt;- 700; exponent &lt;- 2
+WPct &lt;- (RS^exponent)/(RS^exponent + RA^exponent)
+wins &lt;- WPct * 162; losses &lt;- (1 - WPct) * 162
+wins; losses; format(round(WPct, 3), nsmall = 3) # show to 3 decimal places
+## [1] 86.58
+## [1] 75.42
+## [1] &quot;0.534&quot;
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Pythagorean Expectation'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Accuracy'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Other Forms'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Output'>
+         4
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
